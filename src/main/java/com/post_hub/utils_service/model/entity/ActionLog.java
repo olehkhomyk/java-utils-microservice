@@ -15,9 +15,18 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "action_logs", schema = "v1_utils_service")
+@Table(name = "action_logs")
 @ToString
 public class ActionLog {
+	public static final String ID_FIELD_NAME = "id";
+	public static final String USER_ID_FIELD_NAME = "userId";
+	public static final String ACTION_TYPE_FIELD_NAME = "actionType";
+	public static final String POST_HUB_SERVICE_FIELD_NAME = "postHubService";
+	public static final String PRIORITY_TYPE_FIELD_NAME = "priorityType";
+	public static final String IS_READ_FIELD_NAME = "isRead";
+	public static final String MESSAGE_FIELD_NAME = "message";
+	public static final String CREATED_AT_FIELD_NAME = "createdAt";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

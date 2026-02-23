@@ -12,4 +12,5 @@ public interface ActionLogRepository extends JpaRepository<ActionLog, Integer>, 
 
     Optional<ActionLog> findByIdAndUserId(Integer id, Integer userId);
 
+
 }
