@@ -21,19 +21,16 @@ public class ActionLogServiceImpl implements ActionLogService {
     private final ActionLogMapper actionLogMapper;
 
     @Override
-    public UtilsResponse<ActionLogDTO> getById(@NotNull Integer id) {
-        ActionLog actionLog = actionLogRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_ID.getMessage(id)));
+    public UtilsResponse<ActionLogDTO> getById(@NotNull Integer id, Integer userId) {
+        ActionLog actionLog;
 
-        ActionLogDTO actionLogDTO = actionLogMapper.toDTO(actionLog);
-
-        return UtilsResponse.createSuccessful(actionLogDTO);
-    }
-
-    @Override
-    public UtilsResponse<ActionLogDTO> getByIdAndUserId(@NotNull Integer id, @NotNull Integer userId) {
-        ActionLog actionLog = actionLogRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_FOR_USER.getMessage(id, userId)));
+        if (userId != null) {
+            actionLog = actionLogRepository.findByIdAndUserId(id, userId)
+                    .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_FOR_USER.getMessage(id, userId)));
+        } else {
+            actionLog = actionLogRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_ID.getMessage(id)));
+        }
 
         ActionLogDTO actionLogDTO = actionLogMapper.toDTO(actionLog);
 

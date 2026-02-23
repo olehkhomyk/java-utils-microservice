@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -24,22 +25,12 @@ public class ActionLogController {
 
     @GetMapping("${end.point.id}")
     public ResponseEntity<UtilsResponse<ActionLogDTO>> getById(
-            @PathVariable(name = "id") Integer id
+            @PathVariable(name = "id") Integer id,
+            @RequestParam(name = "userId", required = false) Integer userId
     ) {
         log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
 
-        UtilsResponse<ActionLogDTO> result = actionLogService.getById(id);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("${end.point.id}/{userId}")
-    public ResponseEntity<UtilsResponse<ActionLogDTO>> getByIdAndUserId(
-            @PathVariable(name = "id") Integer logId,
-            @PathVariable(name = "userId") Integer userId
-    ) {
-        log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
-
-        UtilsResponse<ActionLogDTO> result = actionLogService.getByIdAndUserId(logId, userId);
+        UtilsResponse<ActionLogDTO> result = actionLogService.getById(id, userId);
         return ResponseEntity.ok(result);
     }
 }
