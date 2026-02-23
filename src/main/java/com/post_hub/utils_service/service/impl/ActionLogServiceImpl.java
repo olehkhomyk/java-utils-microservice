@@ -62,4 +62,23 @@ public class ActionLogServiceImpl implements ActionLogService {
 
 		return UtilsResponse.createSuccessful(response);
 	}
+
+	@Override
+	public UtilsResponse<PaginationResponse<ActionLogDTO>> getAllLogs(@NotNull Pageable pageable) {
+		Page<ActionLogDTO> actionLogs  = actionLogRepository.findAll(pageable)
+				.map(actionLogMapper::toDTO);
+
+		PaginationResponse<ActionLogDTO> response = PaginationResponse.<ActionLogDTO>builder()
+				.content(actionLogs.getContent())
+				.pagination(
+						PaginationResponse.Pagination.builder()
+								.total(actionLogs.getTotalElements())
+								.limit(pageable.getPageSize())
+								.page(actionLogs.getNumber() + 1)
+								.pages(actionLogs.getTotalPages())
+								.build()
+				).build();
+
+		return UtilsResponse.createSuccessful(response);
+	}
 }

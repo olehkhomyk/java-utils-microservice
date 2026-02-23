@@ -48,4 +48,16 @@ public class ActionLogController {
 		UtilsResponse<PaginationResponse<ActionLogDTO>> result = actionLogService.searchLogs(request, pageable);
 		return ResponseEntity.ok(result);
 	}
+
+	@GetMapping("${end.point.all}")
+	public ResponseEntity<UtilsResponse<PaginationResponse<ActionLogDTO>>> searchLogs(
+			@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "limit", defaultValue = "10") Integer limit
+	) {
+		log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
+
+		Pageable pageable = PageRequest.of(page, limit);
+		UtilsResponse<PaginationResponse<ActionLogDTO>> result = actionLogService.getAllLogs(pageable);
+		return ResponseEntity.ok(result);
+	}
 }
