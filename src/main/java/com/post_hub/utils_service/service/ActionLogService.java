@@ -15,4 +15,6 @@ public interface ActionLogService {
 	UtilsResponse<PaginationResponse<ActionLogDTO>> searchLogs(@NotNull ActionLogSearchRequest request, Pageable pageable);
 
 	UtilsResponse<PaginationResponse<ActionLogDTO>> getAllLogs(@NotNull Pageable pageable);
+
+
 }

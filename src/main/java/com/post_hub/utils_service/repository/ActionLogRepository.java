@@ -3,8 +3,12 @@ package com.post_hub.utils_service.repository;
 import com.post_hub.utils_service.model.entity.ActionLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -12,5 +16,7 @@ public interface ActionLogRepository extends JpaRepository<ActionLog, Integer>, 
 
     Optional<ActionLog> findByIdAndUserId(Integer id, Integer userId);
 
-
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
+	@Query(value = "UPDATE ActionLog as al set al.isRead = true WHERE al.id IN :ids AND al.isRead = false")
+	Integer setIsReadEqualsTrue(@Param("ids") List<Integer> ids);
 }

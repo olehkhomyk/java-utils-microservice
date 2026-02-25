@@ -23,30 +23,30 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ActionLogServiceImpl implements ActionLogService {
-    private final ActionLogRepository actionLogRepository;
-    private final ActionLogMapper actionLogMapper;
+	private final ActionLogRepository actionLogRepository;
+	private final ActionLogMapper actionLogMapper;
 
-    @Override
-    public UtilsResponse<ActionLogDTO> getById(@NotNull Integer id, Integer userId) {
-        ActionLog actionLog;
+	@Override
+	public UtilsResponse<ActionLogDTO> getById(@NotNull Integer id, Integer userId) {
+		ActionLog actionLog;
 
-        if (userId != null) {
-            actionLog = actionLogRepository.findByIdAndUserId(id, userId)
-                    .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_FOR_USER.getMessage(id, userId)));
-        } else {
-            actionLog = actionLogRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_ID.getMessage(id)));
-        }
+		if (userId != null) {
+			actionLog = actionLogRepository.findByIdAndUserId(id, userId)
+					.orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_FOR_USER.getMessage(id, userId)));
+		} else {
+			actionLog = actionLogRepository.findById(id)
+					.orElseThrow(() -> new NotFoundException(ApiErrorMessage.NOT_FOUND_LOG_ID.getMessage(id)));
+		}
 
-        ActionLogDTO actionLogDTO = actionLogMapper.toDTO(actionLog);
+		ActionLogDTO actionLogDTO = actionLogMapper.toDTO(actionLog);
 
-        return UtilsResponse.createSuccessful(actionLogDTO);
-    }
+		return UtilsResponse.createSuccessful(actionLogDTO);
+	}
 
 	@Override
 	public UtilsResponse<PaginationResponse<ActionLogDTO>> searchLogs(@NotNull ActionLogSearchRequest request, Pageable pageable) {
 		Specification<ActionLog> specification = new ActionLogSearchCriteria(request);
-		Page<ActionLogDTO> actionLogs  = actionLogRepository.findAll(specification, pageable)
+		Page<ActionLogDTO> actionLogs = actionLogRepository.findAll(specification, pageable)
 				.map(actionLogMapper::toDTO);
 
 		PaginationResponse<ActionLogDTO> response = PaginationResponse.<ActionLogDTO>builder()
@@ -65,7 +65,7 @@ public class ActionLogServiceImpl implements ActionLogService {
 
 	@Override
 	public UtilsResponse<PaginationResponse<ActionLogDTO>> getAllLogs(@NotNull Pageable pageable) {
-		Page<ActionLogDTO> actionLogs  = actionLogRepository.findAll(pageable)
+		Page<ActionLogDTO> actionLogs = actionLogRepository.findAll(pageable)
 				.map(actionLogMapper::toDTO);
 
 		PaginationResponse<ActionLogDTO> response = PaginationResponse.<ActionLogDTO>builder()
