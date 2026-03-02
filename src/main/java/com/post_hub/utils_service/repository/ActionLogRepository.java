@@ -16,7 +16,19 @@ public interface ActionLogRepository extends JpaRepository<ActionLog, Integer>, 
 
     Optional<ActionLog> findByIdAndUserId(Integer id, Integer userId);
 
+	/**
+	 * Updates the isRead field to true for ActionLog entries with the specified IDs.
+	 *
+	 * @Modifying parameters:
+	 * - clearAutomatically: When true, clears the persistence context after the query executes,
+	 *   ensuring that subsequent queries fetch fresh data from the database rather than stale cached entities.
+	 * - flushAutomatically: When true, flushes any pending changes to the database before executing
+	 *   the query, ensuring the update operates on the most current state.
+	 *
+	 * @param ids List of ActionLog IDs to mark as read
+	 * @return The number of rows updated
+	 */
 	@Modifying(clearAutomatically = true, flushAutomatically = true)
-	@Query(value = "UPDATE ActionLog as al set al.isRead = true WHERE al.id IN :ids AND al.isRead = false")
+	@Query(value = "UPDATE ActionLog al SET al.isRead = true WHERE al.id IN :ids AND al.isRead = false")
 	Integer setIsReadEqualsTrue(@Param("ids") List<Integer> ids);
 }

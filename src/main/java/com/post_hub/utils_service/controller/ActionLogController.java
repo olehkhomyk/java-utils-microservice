@@ -2,6 +2,8 @@ package com.post_hub.utils_service.controller;
 
 import com.post_hub.utils_service.model.constant.ApiLogMessage;
 import com.post_hub.utils_service.model.dto.ActionLogDTO;
+import com.post_hub.utils_service.model.dto.ActionLogUpdateResultDTO;
+import com.post_hub.utils_service.model.request.ActionLogIsReadRequest;
 import com.post_hub.utils_service.model.request.ActionLogSearchRequest;
 import com.post_hub.utils_service.model.response.PaginationResponse;
 import com.post_hub.utils_service.model.response.UtilsResponse;
@@ -56,7 +58,16 @@ public class ActionLogController {
 		log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
 
 		Pageable pageable = PageRequest.of(page, limit);
-		UtilsResponse<PaginationResponse<ActionLogDTO>> result = actionLogService.getAllLogs(pageable);
+		UtilsResponse<PaginationResponse<ActionLogDTO>> result = actionLogService.findAllLogs(pageable);
+		return ResponseEntity.ok(result);
+	}
+
+	@PutMapping("${end.point.markAsRead}")
+	ResponseEntity<UtilsResponse<ActionLogUpdateResultDTO>> setIsReadEqualsTrue(
+			@RequestBody @Valid ActionLogIsReadRequest request) {
+		log.trace(ApiLogMessage.NAME_OF_CURRENT_METHOD.getValue(), ApiUtils.getMethodName());
+
+		UtilsResponse<ActionLogUpdateResultDTO> result = actionLogService.setIsReadEqualsTrue(request);
 		return ResponseEntity.ok(result);
 	}
 }

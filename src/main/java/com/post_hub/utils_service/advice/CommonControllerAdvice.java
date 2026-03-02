@@ -20,22 +20,22 @@ import java.util.Objects;
 public class CommonControllerAdvice {
 	@ExceptionHandler
 	@ResponseBody
-	protected ResponseEntity<String> handleException(Exception e) {
+	protected ResponseEntity<UtilsResponse<String>> handleException(Exception e) {
 		logStackTrace(e);
 
 		return ResponseEntity
 				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(e.getMessage());
+				.body(UtilsResponse.createFailed(e.getMessage()));
 	}
 
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseBody
-	protected ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+	protected ResponseEntity<UtilsResponse<String>> handleNotFoundException(NotFoundException e) {
 		logStackTrace(e);
 
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
-				.body(e.getMessage());
+				.body(UtilsResponse.createFailed(e.getMessage()));
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)

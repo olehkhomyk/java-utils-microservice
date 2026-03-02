@@ -3,14 +3,17 @@ package com.post_hub.utils_service.service.impl;
 import com.post_hub.utils_service.mapper.ActionLogMapper;
 import com.post_hub.utils_service.model.constant.ApiErrorMessage;
 import com.post_hub.utils_service.model.dto.ActionLogDTO;
+import com.post_hub.utils_service.model.dto.ActionLogUpdateResultDTO;
 import com.post_hub.utils_service.model.entity.ActionLog;
 import com.post_hub.utils_service.model.exception.NotFoundException;
+import com.post_hub.utils_service.model.request.ActionLogIsReadRequest;
 import com.post_hub.utils_service.model.request.ActionLogSearchRequest;
 import com.post_hub.utils_service.model.response.PaginationResponse;
 import com.post_hub.utils_service.model.response.UtilsResponse;
 import com.post_hub.utils_service.repository.ActionLogRepository;
 import com.post_hub.utils_service.repository.criteria.ActionLogSearchCriteria;
 import com.post_hub.utils_service.service.ActionLogService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,7 +71,7 @@ public class ActionLogServiceImpl implements ActionLogService {
 	}
 
 	@Override
-	public UtilsResponse<PaginationResponse<ActionLogDTO>> getAllLogs(@NotNull Pageable pageable) {
+	public UtilsResponse<PaginationResponse<ActionLogDTO>> findAllLogs(@NotNull Pageable pageable) {
 		Page<ActionLogDTO> actionLogs = actionLogRepository.findAll(pageable)
 				.map(actionLogMapper::toDTO);
 
@@ -80,5 +87,33 @@ public class ActionLogServiceImpl implements ActionLogService {
 				).build();
 
 		return UtilsResponse.createSuccessful(response);
+	}
+
+	@Override
+	@Transactional()
+	public UtilsResponse<ActionLogUpdateResultDTO> setIsReadEqualsTrue(@NotNull ActionLogIsReadRequest request) {
+		Integer userId = request.getUserId();
+		List<ActionLog> logs = actionLogRepository.findAllById(request.getIds());
+
+		Map<Boolean, List<Integer>> partitioned = logs.stream()
+				.collect(
+						Collectors.partitioningBy(
+								log -> log.getUserId().equals(userId),
+								Collectors.mapping(ActionLog::getId, Collectors.toList())
+						)
+				);
+
+		List<Integer> allowedIds = partitioned.get(true);
+		List<Integer> skippedIds = partitioned.get(true);
+
+		int updatedCount = allowedIds.isEmpty() ? 0 : actionLogRepository.setIsReadEqualsTrue(allowedIds);
+
+		return UtilsResponse.createSuccessful(
+				ActionLogUpdateResultDTO.builder()
+						.updatedCount(updatedCount)
+						.updatedIds(allowedIds)
+						.skippedIds(skippedIds)
+						.build()
+		);
 	}
 }
