@@ -45,9 +45,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(NOT_SECURED_URLS).permitAll()
 
-                        .requestMatchers(get("/actionLogs/{id}")).hasAnyAuthority(allDashboardSecurityRoles())
-                        .requestMatchers(get("/actionLogs/all")).hasAnyAuthority(allDashboardSecurityRoles())
-                        .requestMatchers(put("/actionLogs/markAsRead")).hasAnyAuthority(allDashboardSecurityRoles())
+                        .requestMatchers(get("/logs/*")).hasAnyAuthority(allDashboardSecurityRoles())
+                        .requestMatchers(get("/logs/all")).hasAnyAuthority(allDashboardSecurityRoles())
+                        .requestMatchers(post("/logs/search")).hasAnyAuthority(allDashboardSecurityRoles())
+                        .requestMatchers(put("/logs/markAsRead")).hasAnyAuthority(allDashboardSecurityRoles())
 
                         .anyRequest().denyAll()
                 )
