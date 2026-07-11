@@ -13,10 +13,11 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEvent {
+public class ActionEvent {
     private EventType eventType;
     private LocalDateTime timestamp;
     private Integer userId;
     private String email;
+    private String service;
     private Map<String, Object> details;
 }
